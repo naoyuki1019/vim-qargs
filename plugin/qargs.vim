@@ -1,6 +1,8 @@
-command! -nargs=0 -bar Qargs execute 'args' QuickfixFilenames()
-function! QuickfixFilenames()
+" command! -nargs=0 -bar Qargs execute 'args' QuickfixFilenames()
+command! -nargs=0 -bar Qargs call s:QuickfixFilenames()
+function! s:QuickfixFilenames()
   " Building a hash ensures we get each buffer only once
+  let current_buffer = bufnr('%')
   let buffer_numbers = {}
   for quickfix_item in getqflist()
     let bufnr = quickfix_item['bufnr']
@@ -9,6 +11,17 @@ function! QuickfixFilenames()
       let buffer_numbers[bufnr] = bufname(bufnr)
     endif
   endfor
-  return join(map(values(buffer_numbers), 'fnameescape(v:val)'))
+  " return join(map(values(buffer_numbers), 'fnameescape(v:val)'))
+  execute 'args ' . join(map(values(buffer_numbers), 'fnameescape(v:val)'))
+
+  "execute 'normal! <C-o>'
+  if bufexists(current_buffer)
+      execute 'b ' . current_buffer
+  else
+      "What is location-list. I only use quickfix!
+      execute 'q | cw'
+  endif
+
+  return
 endfunction
 
