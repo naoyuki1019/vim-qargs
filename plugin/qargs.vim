@@ -1,3 +1,17 @@
+scriptencoding utf-8
+"/**
+" * @file
+" * @author
+" * @version
+" */
+if exists("g:loaded_qargs")
+  finish
+endif
+let g:loaded_qargs = 1
+
+let s:save_cpo = &cpo
+set cpo&vim
+
 " command! -nargs=0 -bar Qargs execute 'args' QuickfixFilenames()
 command! -nargs=0 -bar Qargs call s:QuickfixFilenames()
 function! s:QuickfixFilenames()
@@ -25,3 +39,5 @@ function! s:QuickfixFilenames()
   return
 endfunction
 
+let &cpo = s:save_cpo
+unlet s:save_cpo
